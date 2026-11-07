@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { DownloadSection } from "@/components/landing/download-section";
 import { FaqSection } from "@/components/landing/faq-section";
 import { FloatingNavbar } from "@/components/landing/floating-navbar";
@@ -22,6 +23,7 @@ export function App() {
 				<DownloadSection />
 			</main>
 			<Footer />
+			<Analytics />
 		</div>
 	);
 }
