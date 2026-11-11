@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
@@ -70,11 +70,23 @@ try {
 		fs.copyFileSync(instructionsSrc, path.join(stagingDir, "INSTRUCTIONS.txt"));
 	}
 
-	// Compress-Archive is a native PowerShell cmdlet available on Windows
-	console.log("Running PowerShell Compress-Archive...");
-	execSync(
-		`powershell -Command "Compress-Archive -Path '${stagingDir}\\*' -DestinationPath '${zipName}' -Force"`,
-	);
+	if (process.platform === "win32") {
+		// Compress-Archive is a native PowerShell cmdlet available on Windows
+		console.log("Running PowerShell Compress-Archive...");
+		execFileSync("powershell", [
+			"-NoProfile",
+			"-Command",
+			`Compress-Archive -Path '${stagingDir}\\*' -DestinationPath '${zipName}' -Force`,
+		]);
+	} else {
+		// Use standard zip CLI on Linux/macOS with python3 zipfile fallback
+		console.log("Creating ZIP archive...");
+		try {
+			execFileSync("zip", ["-r", "-q", zipName, "."], { cwd: stagingDir });
+		} catch {
+			execFileSync("python3", ["-m", "zipfile", "-c", zipName, "."], { cwd: stagingDir });
+		}
+	}
 
 	// Clean up staging directory
 	fs.rmSync(stagingDir, { recursive: true, force: true });

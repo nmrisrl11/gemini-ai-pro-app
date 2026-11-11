@@ -16,8 +16,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"dev:ext": "set VITE_EXT_BUILD=true&& vite -c vite.ext.config.ts",
-		"build:ext": "set VITE_EXT_BUILD=true&& vite build -c vite.ext.config.ts",
+		"dev:ext": "vite -c vite.ext.config.ts",
+		"build:ext": "vite build -c vite.ext.config.ts",
 		"pack:ext": "npm run build:ext && node scripts/pack-extension.js",
 		"build": "oxlint src --deny-warnings && tsc -b && vite build",
 		"lint": "oxlint src",
